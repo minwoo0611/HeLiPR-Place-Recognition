@@ -11,10 +11,11 @@ If you find this project useful in your research, please cite these works:
 
 ```latex
 @article{jung2024hetero,
-author = {Minwoo Jung and Wooseong Yang and Dongjae Lee and Hyeonjae Gil and Giseop Kim and Ayoung Kim},
-title ={HeLiPR: Heterogeneous LiDAR dataset for inter-LiDAR place recognition under spatiotemporal variations},
-journal = {The International Journal of Robotics Research},
-year = {2024}}
+   author = {Minwoo Jung and Wooseong Yang and Dongjae Lee and Hyeonjae Gil and Giseop Kim and Ayoung Kim},
+   title ={HeLiPR: Heterogeneous LiDAR dataset for inter-LiDAR place recognition under spatiotemporal variations},
+   journal = {The International Journal of Robotics Research},
+   year = {2024}
+}
 ```
 
 ```latex
