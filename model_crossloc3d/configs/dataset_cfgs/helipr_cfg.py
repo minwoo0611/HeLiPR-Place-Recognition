@@ -1,7 +1,7 @@
 dataset_type = 'HeLiPR'
-data_root_dir = '/mydata/home/minwoo/Research/PR/HeLiPR-Place-Recognition/'
+data_root_dir = '/PATH/HeLiPR-Place-Recognition/'
 dataset_cfg = dict(
-    data_root_dir='/mydata/home/minwoo/Research/PR/HeLiPR-Place-Recognition/',
+    data_root_dir='/PATH/HeLiPR-Place-Recognition/',
     transform_cfg=dict(
         train=[
             dict(

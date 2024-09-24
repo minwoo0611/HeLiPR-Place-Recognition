@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This repository is dedicated to comparing different place recognition methods on the **HeLiPR** dataset. We provide code for the following methods:
+This repository is dedicated to comparing different place recognition methods on the [HeLiPR dataset](https://sites.google.com/view/heliprdataset). We provide code for the following methods:
 
 | Method         | Status     |
 |----------------|------------|
@@ -11,7 +11,7 @@ This repository is dedicated to comparing different place recognition methods on
 | LoGG3D-Net     | To Do      |
 | CROSSLOC3D     | 24.09.24   |
 | CASSPR         | To Do      |
-| SOLID          | To Do      |
+| SOLID          | 24.09.24   |
 | HeLiOS         | To Do      |
 
 ### Method Details
@@ -154,7 +154,7 @@ If you find this repository useful, please cite the following papers:
 @article{jung2024heteropr,
   author={Minwoo Jung and Sangwoo Jung and Hyeonjae Gil and Ayoung Kim},
   title={HeLiOS: Heterogeneous LiDAR Place Recognition via Overlap-based Learning and Local Spherical Transformer},
-  year={2025},
+  year={2024},
   journal={ICRA 2025 submission}
 }
 ```
