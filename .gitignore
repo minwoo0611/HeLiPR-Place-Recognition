@@ -1,0 +1,4 @@
+# git ignore
+data_validation/*
+data_overlap/*.txt
+data_ckpt/*.pth
