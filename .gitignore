@@ -1,4 +1,6 @@
 # git ignore
-data_validation/*
+data_validation/Bridge*
+data_validation/Town*
+data_validation/Roundabout*
 data_overlap/*.txt
 data_ckpt/*.pth
