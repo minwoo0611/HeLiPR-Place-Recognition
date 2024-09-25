@@ -394,7 +394,7 @@ def get_recall_intra(m, n, database_vectors, query_vectors, query_sets, database
     one_percent_recall = (one_percent_retrieved / num_evaluated) * 100 if num_evaluated > 0 else 0.0
     recall = (np.cumsum(recall) / num_evaluated) * 100 if num_evaluated > 0 else np.zeros(num_neighbors)
     
-    return recall, top1_similarity_score, one_percent_recall
+    return recall, one_percent_recall
 
 
 def get_sets_dict(pickle_file):

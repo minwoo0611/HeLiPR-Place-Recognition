@@ -7,7 +7,7 @@ This repository is dedicated to comparing different place recognition methods on
 | Method         | Status     |
 |----------------|------------|
 | PointNetVLAD   | 24.09.25   |
-| MinkLoc3Dv2    | To Do      |
+| MinkLoc3Dv2    | 24.09.25   |
 | LoGG3D-Net     | To Do      |
 | CROSSLOC3D     | 24.09.24   |
 | CASSPR         | 24.09.25   |

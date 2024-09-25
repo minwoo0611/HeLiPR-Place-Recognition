@@ -1,0 +1,21 @@
+# MinkLoc3Dv2 training config using Baseline dataset
+[DEFAULT]
+dataset_folder = ../
+
+[TRAIN]
+num_workers = 8
+batch_size = 2048
+batch_split_size = 128
+val_batch_size = 256
+
+lr = 1e-3
+epochs = 400
+scheduler_milestones = 250, 350
+aug_mode = 1
+weight_decay = 1e-4
+loss = TruncatedSmoothAP
+tau1 = 0.01
+positives_per_query = 4
+
+train_file = helipr_training.pickle
+val_file = helipr_val.pickle

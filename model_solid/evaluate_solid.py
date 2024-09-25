@@ -14,7 +14,7 @@ import random
 import tqdm
 import open3d as o3d
 
-dataset_folder = "/mydata/home/minwoo/Research/PR/HeLiPR-Place-Recognition/"
+dataset_folder = "/PATH/HeLiPR-Place-Recognition/"
 
 ## =========================================================================================
 ##                                            SOLiD
