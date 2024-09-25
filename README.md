@@ -10,7 +10,7 @@ This repository is dedicated to comparing different place recognition methods on
 | MinkLoc3Dv2    | To Do      |
 | LoGG3D-Net     | To Do      |
 | CROSSLOC3D     | 24.09.24   |
-| CASSPR         | To Do      |
+| CASSPR         | 24.09.25   |
 | SOLID          | 24.09.24   |
 | HeLiOS         | To Do      |
 
@@ -28,23 +28,23 @@ This repository is dedicated to comparing different place recognition methods on
 
 ![Comparison Table](assets/Table.png)
 
-This table showcases a comparison of different methods on the **HeLiPR** dataset using 3D point cloud data with 8,192 points per scan. To ensure fairness, we utilize identical parameter settings across all methods. **Average Recall@1** and **Average Recall@5** are used as evaluation metrics, with each value representing the average results from sequences 4 to 6 in the HeLiPR dataset.
+This table showcases a comparison of different methods on the **HeLiPR** dataset using 3D point cloud data with 8,192 points per scan. To ensure fairness, we utilize identical parameter settings across all methods. **Average Recall@1** and **Average Recall@5** are used as evaluation metrics, with each value representing the average 4 to 6 results in the HeLiPR dataset.
 
 ### Dataset Details
 
 - **Ouster - Narrow** (Narrow FOV LiDAR data from the Ouster sensor)
-  - **Database**: `Sequence01-Ouster`
-  - **Query**: `Sequence01-Aeva`, `Sequence01-Livox`, `Sequence02-Aeva`, `Sequence02-Livox`, `Sequence03-Aeva`, `Sequence03-Livox`
+  - **Database**: `Seq01-Ouster`
+  - **Query**: `Seq01-Aeva`, `Seq01-Livox`, `Seq02-Aeva`, `Seq02-Livox`, `Seq03-Aeva`, `Seq03-Livox`
 
 - **Aeva - Wide** (Wide FOV LiDAR data from the Aeva sensor)
-  - **Database**: `Sequence01-Aeva`
-  - **Query**: `Sequence01-Ouster`, `Sequence01-Velodyne`, `Sequence02-Ouster`, `Sequence02-Velodyne`, `Sequence03-Ouster`, `Sequence03-Velodyne`
+  - **Database**: `Seq01-Aeva`
+  - **Query**: `Seq01-Ouster`, `Seq01-Velodyne`, `Seq02-Ouster`, `Seq02-Velodyne`, `Seq03-Ouster`, `Seq03-Velodyne`
 
-For the **Bridge** sequences, we grouped `Bridge01-04` and `Bridge02-03` to ensure sufficient overlap between the database and query scans. In the `Bridge01-04` cases:
+For the **Bridge** Seqs, we grouped `Bridge01-04` and `Bridge02-03` to ensure sufficient overlap between the database and query scans. In the `Bridge01-04` cases:
 
 - **Ouster - Narrow**
-  - **Database**: `Sequence01-Ouster`
-  - **Query**: `Sequence01-Ouster`, `Sequence01-Velodyne`, `Sequence02-Ouster`, `Sequence02-Velodyne`
+  - **Database**: `Seq01-Ouster`
+  - **Query**: `Seq01-Ouster`, `Seq01-Velodyne`, `Seq02-Ouster`, `Seq02-Velodyne`
 
 ## Usage
 
