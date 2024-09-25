@@ -59,7 +59,8 @@ RUN pip install bagpy \
     future_fstrings \
     bitarray \
     pytorch_metric_learning==1.1.2 \
-    psutil
+    psutil \
+    tensorboardX
     
 # Copy MinkowskiEngine source code into the image
 COPY thirdparty/MinkowskiEngine /opt/MinkowskiEngine
