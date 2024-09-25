@@ -7,8 +7,8 @@ This repository is dedicated to comparing different place recognition methods on
 | Method         | Status     |
 |----------------|------------|
 | PointNetVLAD   | 24.09.25   |
-| MinkLoc3Dv2    | 24.09.25   |
 | LoGG3D-Net     | To Do      |
+| MinkLoc3Dv2    | 24.09.25   |
 | CROSSLOC3D     | 24.09.24   |
 | CASSPR         | 24.09.25   |
 | SOLID          | 24.09.24   |
@@ -17,8 +17,8 @@ This repository is dedicated to comparing different place recognition methods on
 ### Method Details
 
 - **[PointNetVLAD](https://arxiv.org/abs/1804.03492)**: Deep Point Cloud Based Retrieval for Large-Scale Place Recognition [[Original Code]](https://github.com/cattaneod/PointNetVlad-Pytorch) (CVPR 2018)
-- **[MinkLoc3Dv2](https://arxiv.org/pdf/2203.00972v1)**: Improving Point Cloud Based Place Recognition with Ranking-based Loss and Large Batch Training [[Original Code]](https://github.com/jac99/MinkLoc3Dv2) (ICPR 2022)
 - **[LoGG3D-Net](https://arxiv.org/abs/2109.08336)**: Locally Guided Global Descriptor Learning for 3D Place Recognition [[Original Code]](https://github.com/csiro-robotics/LoGG3D-Net) (ICRA 2021)
+- **[MinkLoc3Dv2](https://arxiv.org/pdf/2203.00972v1)**: Improving Point Cloud Based Place Recognition with Ranking-based Loss and Large Batch Training [[Original Code]](https://github.com/jac99/MinkLoc3Dv2) (ICPR 2022)
 - **[CrossLoc3D](https://arxiv.org/abs/2303.17778)**: Aerial-Ground Cross-Source 3D Place Recognition [[Original Code]](https://github.com/rayguan97/crossloc3d) (ICCV 2023)
 - **[CASSPR](https://arxiv.org/abs/2211.12542)**: Cross Attention Single Scan Place Recognition [[Original Code]](https://github.com/Yan-Xia/CASSPR) (ICCV 2023)
 - **[SOLID](https://arxiv.org/abs/2408.07330)**: Spatially Organized and Lightweight Global Descriptor for FOV-constrained LiDAR Place Recognition [[Original Code]](https://github.com/sparolab/solid) (RA-L 2024)
