@@ -14,7 +14,11 @@ import random
 import tqdm
 import open3d as o3d
 
-dataset_folder = "/PATH/HeLiPR-Place-Recognition/"
+dataset_folder = "/mydata/home/minwoo/Research/PR/HeLiPR-Place-Recognition/"
+
+## =========================================================================================
+##                                            SOLiD
+## =========================================================================================
 
 def remove_closest_points(points, thres):
     dists = np.sum(np.square(points[:, :3]), axis=1)
@@ -75,9 +79,6 @@ def pt2rah(point, gap_ring, gap_sector, gap_height, num_ring, num_sector, num_he
 
     return int(idx_ring), int(idx_sector), int(idx_height)
 
-## =========================================================================================
-##                                            SOLiD
-## =========================================================================================
 
 def ptcloud2solid(ptcloud, fov_u, fov_d, num_sector, num_ring, num_height, max_length):
     num_points = ptcloud.shape[0]               
@@ -121,6 +122,12 @@ def get_descriptor(scan, fov_u, fov_d, num_height, max_length):
 
 
 def evaluate():
+    """
+    Main evaluation function. Evaluates the descriptors on the datasets.
+
+    Returns:
+    - dict: Evaluation statistics.
+    """
     eval_database_files = ['helipr_validation_db.pickle']
     eval_query_files = ['helipr_validation_query.pickle']
 
@@ -128,246 +135,274 @@ def evaluate():
 
     stats = {}
     for database_file, query_file in zip(eval_database_files, eval_query_files):
-        # Extract location name from query and database files
-        location_name = database_file.split('_')[0]
-        temp = query_file.split('_')[0]
-        assert location_name == temp, 'Database location: {} does not match query location: {}'.format(database_file,
-                                                                                                       query_file)
+        location_name = os.path.splitext(database_file)[0]
 
-        p = os.path.join(dataset_folder, database_file)
-        with open(p, 'rb') as f:
+        with open(os.path.join(dataset_folder, database_file), 'rb') as f:
             database_sets = pickle.load(f)
 
-        p = os.path.join(dataset_folder, query_file)
-        with open(p, 'rb') as f:
+        with open(os.path.join(dataset_folder, query_file), 'rb') as f:
             query_sets = pickle.load(f)
-        
-        temp = evaluate_dataset(database_sets, query_sets)
-        stats[location_name] = temp
+
+        stats[location_name] = evaluate_dataset(database_sets, query_sets)
 
     return stats
 
-
 def evaluate_dataset(database_sets, query_sets):
-    # Run evaluation on a single dataset
-    recall = np.zeros(30)
+    """
+    Evaluate the descriptors on a single dataset.
+
+    Parameters:
+    - database_sets (list): Database sets.
+    - query_sets (list): Query sets.
+
+    Returns:
+    - dict: Average recall and one-percent recall.
+    """
+    num_neighbors = 30
+    recall = np.zeros(num_neighbors)
     count = 0
     one_percent_recall = []
 
-    database_embeddings = []
-    query_embeddings = []
+    # Compute embeddings
+    database_embeddings = [get_latent_vectors(db_set) for db_set in tqdm.tqdm(database_sets, desc='Computing database embeddings')]
+    query_embeddings = [get_latent_vectors(q_set) for q_set in tqdm.tqdm(query_sets, desc='Computing query embeddings')]
 
-    for set in tqdm.tqdm(database_sets, disable=False, desc='Computing database embeddings'):
-        database_embeddings.append(get_latent_vectors(set))
-
-    for set in tqdm.tqdm(query_sets, disable=False, desc='Computing query embeddings'):
-        query_embeddings.append(get_latent_vectors(set))    
-
-
-
+    # Evaluate pairs
     for i in range(len(database_sets)):
         for j in range(len(query_sets)):
-            if (i==0 and j == 0) or (i==1 and j == 2):
-                pair_recall, pair_opr = get_recall_intra(i, j, database_embeddings, database_embeddings, query_sets, database_sets)
+            if (i == 0 and j == 0) or (i == 1 and j == 2):
+                pair_recall, pair_opr = get_recall_intra(
+                    i, j, database_embeddings, query_embeddings, query_sets, database_sets)
             else:
-                pair_recall, pair_opr = get_recall(i, j, database_embeddings, query_embeddings, query_sets,
-                                               database_sets)
-            print(pair_recall)
+                pair_recall, pair_opr = get_recall(
+                    i, j, database_embeddings, query_embeddings, query_sets, database_sets)
+            
+            print(f"Pair recall between database set {i} and query set {j}: {pair_recall}")
+                
             recall += np.array(pair_recall)
             count += 1
             one_percent_recall.append(pair_opr)
 
-
     ave_recall = recall / count
     ave_one_percent_recall = np.mean(one_percent_recall)
-    stats = {'ave_one_percent_recall': ave_one_percent_recall, 'ave_recall': ave_recall}
-    return stats
+    return {'ave_one_percent_recall': ave_one_percent_recall, 'ave_recall': ave_recall}
 
+def get_latent_vectors(data_set):
+    """
+    Compute embeddings for a set of point clouds.
 
-def get_latent_vectors(set):
+    Parameters:
+    - data_set (list): List of data entries.
 
-    embeddings = None
-    for i, elem_ndx in enumerate(set):
-        pc_file_path = os.path.join(dataset_folder, set[elem_ndx]["query"])
-        file_path = os.path.join(pc_file_path)
+    Returns:
+    - np.ndarray: Array of embeddings.
+    """
+    embeddings = []
+    for idx in range(len(data_set)):
+        pc_file_path = os.path.join(dataset_folder, data_set[idx]["query"])
+        scan = np.fromfile(pc_file_path, dtype=[
+            ('x', np.float32), ('y', np.float32), ('z', np.float32), ('intensity', np.float32)])
+        points = np.stack((scan['x'], scan['y'], scan['z']), axis=-1)
 
-        lidar_dtype=[('x', np.float32), ('y', np.float32), ('z', np.float32), ('intensity', np.float32)]
-        scan         = np.fromfile(file_path, dtype=lidar_dtype)
-        points  = np.stack((scan['x'], scan['y'], scan['z']), axis = -1)
+        # Preprocessing
+        points *= 100  # Scaling
+        points = remove_closest_points(points, 1)
+        points = remove_far_points(points, 100)
+        points = down_sampling(points, voxel_size=0.1)
 
-        points *= 100
-        query = remove_closest_points(points, 1)
-        query = remove_far_points(query, 100)
-        query = down_sampling(query, 0.1)
-        
-        embedding, _ = get_descriptor(query, 38.6, -38.6, 128, 100)
+        embedding, _ = get_descriptor(points, 38.6, -38.6, 128, 100)
+        embeddings.append(embedding)
 
-        if embeddings is None:
-            embeddings = np.zeros((len(set), embedding.shape[0]), dtype=embedding.dtype)
-        embeddings[i] = embedding
-
-    return embeddings
-
+    return np.array(embeddings)
 
 def get_recall(m, n, database_vectors, query_vectors, query_sets, database_sets):
-    # Original PointNetVLAD code
+    """
+    Compute recall metrics for inter-sequence place recognition.
+
+    Parameters:
+    - m (int): Database index.
+    - n (int): Query index.
+    - database_vectors (list): Database embeddings.
+    - query_vectors (list): Query embeddings.
+    - query_sets (list): Query metadata.
+    - database_sets (list): Database metadata.
+
+    Returns:
+    - tuple: (recall array, one-percent recall value)
+    """
     database_output = database_vectors[m]
     queries_output = query_vectors[n]
 
-    # check nan values
     if np.isnan(database_output).any():
-        print('NaN values detected in db embeddings')
+        print('NaN values detected in database embeddings')
     if np.isnan(queries_output).any():
         print('NaN values detected in query embeddings')
 
-    # When embeddings are normalized, using Euclidean distance gives the same
-    # nearest neighbour search results as using cosine distance
     database_nbrs = KDTree(database_output)
-
     num_neighbors = 30
-    recall = [0] * num_neighbors
-
+    recall = np.zeros(num_neighbors)
     one_percent_retrieved = 0
-    threshold = max(int(round(len(database_output)/100.0)), 1)
+    threshold = max(int(round(len(database_output) / 100.0)), 1)
 
     num_evaluated = 0
-
-    thresholds = np.linspace(
-        0, 1, int(250))
+    thresholds = np.linspace(0, 1, 250)
     num_thresholds = len(thresholds)
 
-    # Store results of evaluation.
+    # Initialize evaluation metrics
     num_true_positive = np.zeros(num_thresholds)
     num_false_positive = np.zeros(num_thresholds)
     num_true_negative = np.zeros(num_thresholds)
     num_false_negative = np.zeros(num_thresholds)
-    
 
     for i in range(len(queries_output)):
-        # i is query element ndx
-        query_details = query_sets[n][i]    # {'query': path, 'northing': , 'easting': }
-        true_neighbors = query_details[m]
-        if len(true_neighbors) == 0:
+        query_details = query_sets[n][i]
+        true_neighbors = query_details.get(m, [])
+        if not true_neighbors:
             continue
         num_evaluated += 1
 
-        # Find nearest neightbours
-        distances, indices = database_nbrs.query(np.array([queries_output[i]]), k=num_neighbors)
+        distances, indices = database_nbrs.query([queries_output[i]], k=num_neighbors)
 
-        for j in range(len(indices[0])):
-            if indices[0][j] in true_neighbors:
-                recall[j] += 1
+        for j, idx in enumerate(indices[0]):
+            if idx in true_neighbors:
+                recall[j:] += 1
                 break
 
-        if len(list(set(indices[0][0:int(threshold)]).intersection(set(true_neighbors)))) > 0:
+        if set(indices[0][:threshold]).intersection(true_neighbors):
             one_percent_retrieved += 1
 
-        for thres_idx in range(num_thresholds):
-            threshold = thresholds[thres_idx]
-            if distances[0][0] < threshold:
+        # Compute true positives and false positives for thresholds
+        for thres_idx, threshold_value in enumerate(thresholds):
+            if distances[0][0] < threshold_value:
                 if indices[0][0] in true_neighbors:
                     num_true_positive[thres_idx] += 1
                 else:
                     num_false_positive[thres_idx] += 1
             else:
-                if len(true_neighbors) == 0:
+                if not true_neighbors:
                     num_true_negative[thres_idx] += 1
                 else:
                     num_false_negative[thres_idx] += 1
-    
-    Precisions, Recalls = [], []
-    for ithThres in range(num_thresholds):
-        nTruePositive = num_true_positive[ithThres]
-        nFalsePositive = num_false_positive[ithThres]
-        nTrueNegative = num_true_negative[ithThres]
-        nFalseNegative = num_false_negative[ithThres]
 
-        Precision = 0.0
-        Recall = 0.0
-        if nTruePositive > 0:
-            Precision = nTruePositive / (nTruePositive + nFalsePositive)
-            Recall = nTruePositive / (nTruePositive + nFalseNegative)
-        
-        Precisions.append(Precision)
-        Recalls.append(Recall)
+    # Calculate precision and recall per threshold
+    Precisions = np.divide(num_true_positive, num_true_positive + num_false_positive, out=np.zeros_like(num_true_positive), where=(num_true_positive + num_false_positive)!=0)
+    Recalls = np.divide(num_true_positive, num_true_positive + num_false_negative, out=np.zeros_like(num_true_positive), where=(num_true_positive + num_false_negative)!=0)
 
-    one_percent_recall = (one_percent_retrieved/float(num_evaluated))*100
-    recall = (np.cumsum(recall)/float(num_evaluated))*100
+    one_percent_recall = (one_percent_retrieved / num_evaluated) * 100
+    recall = (recall / num_evaluated) * 100
 
     return recall, one_percent_recall
 
 def get_recall_intra(m, n, database_vectors, query_vectors, query_sets, database_sets):
-    # Original PointNetVLAD code
-    database_output = database_vectors[m]
-    # check nan values
-    if np.isnan(database_output).any():
-        print('NaN values detected in db embeddings')
+    """
+    Compute recall metrics for intra-sequence place recognition.
 
-    # When embeddings are normalized, using Euclidean distance gives the same
-    # nearest neighbour search results as using cosine distance
+    Parameters:
+    - m (int): Database index.
+    - n (int): Query index.
+    - database_vectors (list): Database embeddings.
+    - query_vectors (list): Query embeddings.
+    - query_sets (list): Query metadata.
+    - database_sets (list): Database metadata.
+
+    Returns:
+    - tuple: (recall array, one-percent recall value)
+    """
+    database_output = database_vectors[m]
+
+    if np.isnan(database_output).any():
+        print('NaN values detected in database embeddings')
+
+    num_neighbors = 30
+    recall = np.zeros(num_neighbors)
+    one_percent_retrieved = 0
+    num_evaluated = 0
+    threshold = max(int(round(len(database_output) / 100.0)), 1)
+    thresholds = np.linspace(0, 1, 250)
+    num_thresholds = len(thresholds)
+
+    # Initialize evaluation metrics
+    num_true_positive = np.zeros(num_thresholds)
+    num_false_positive = np.zeros(num_thresholds)
+    num_true_negative = np.zeros(num_thresholds)
+    num_false_negative = np.zeros(num_thresholds)
+
+    # Variables for the trajectory database
     trajectory_db = []
     trajectory_past = []
     trajectory_time = []
-    num_neighbors = 30
-    recall = [0] * num_neighbors
-    one_percent_retrieved = 0
-    threshold = max(int(round(len(database_output)/100.0)), 1)
 
-    num_evaluated = 0
-    init_time = 0
-    # query and db are the same
+    init_time = None
+
     for i in range(len(database_output)):
-        #validation/Roundabout01-Aeva/LiDAR/1689519044659669328.bin
-        time = database_sets[m][i]['query']
-        time = time.split('/')[-1]
-        time = time.split('.')[0]
-        
-        time = float(time) / 1e9
-        if init_time == 0:
+        # Extract timestamp from file name
+        time_str = os.path.basename(database_sets[m][i]['query']).split('.')[0]
+        time = float(time_str) / 1e9
+
+        if init_time is None:
             init_time = time
-        
+
         trajectory_time.append(time)
         trajectory_past.append(database_output[i])
 
+        # Wait until 90 seconds have passed
         if time - init_time < 90:
             continue
 
-        while len(trajectory_time) > 0 and trajectory_time[0] < time - 30 :
-            trajectory_db.append(trajectory_past[0])
+        # Remove old entries (older than 30 seconds)
+        while trajectory_time and trajectory_time[0] < time - 30:
+            trajectory_db.append(trajectory_past.pop(0))
             trajectory_time.pop(0)
-            trajectory_past.pop(0)
-        
+
         if len(trajectory_db) < num_neighbors:
             continue
-        
+
         database_nbrs = KDTree(trajectory_db)
-
-        query_details = query_sets[n][i]    # {'query': path, 'northing': , 'easting': }
-        true_neighbors = query_details[m]
-
-        # the length of true neighbors should not be 0 and there should be true neighbor index smaller than the length of trajectory_db
-        if len(true_neighbors) == 0:
+        query_details = query_sets[n][i]
+        true_neighbors = query_details.get(m, [])
+        if not true_neighbors or min(true_neighbors) >= len(trajectory_db):
             continue
-        if min(true_neighbors) >= len(trajectory_db):
-            continue
-        
+
         num_evaluated += 1
+        distances, indices = database_nbrs.query([database_output[i]], k=num_neighbors)
 
-        distances, indices = database_nbrs.query(np.array([database_output[i]]), k=num_neighbors)
-
-        for j in range(len(indices[0])):
-            if indices[0][j] in true_neighbors:
-                recall[j] += 1
+        for j, idx in enumerate(indices[0]):
+            if idx in true_neighbors:
+                recall[j:] += 1
                 break
 
-        if len(list(set(indices[0][0:threshold]).intersection(set(true_neighbors)))) > 0:
+        if set(indices[0][:threshold]).intersection(true_neighbors):
             one_percent_retrieved += 1
 
-    one_percent_recall = (one_percent_retrieved/float(num_evaluated))*100
-    recall = (np.cumsum(recall)/float(num_evaluated))*100
+        # Compute true positives and false positives for thresholds
+        for thres_idx, threshold_value in enumerate(thresholds):
+            if distances[0][0] < threshold_value:
+                if indices[0][0] in true_neighbors:
+                    num_true_positive[thres_idx] += 1
+                else:
+                    num_false_positive[thres_idx] += 1
+            else:
+                if not true_neighbors:
+                    num_true_negative[thres_idx] += 1
+                else:
+                    num_false_negative[thres_idx] += 1
+
+    if num_evaluated == 0:
+        return np.zeros(num_neighbors), 0.0
+
+    # Calculate precision and recall per threshold
+    Precisions = np.divide(num_true_positive, num_true_positive + num_false_positive, out=np.zeros_like(num_true_positive), where=(num_true_positive + num_false_positive)!=0)
+    Recalls = np.divide(num_true_positive, num_true_positive + num_false_negative, out=np.zeros_like(num_true_positive), where=(num_true_positive + num_false_negative)!=0)
+
+    one_percent_recall = (one_percent_retrieved / num_evaluated) * 100
+    recall = (recall / num_evaluated) * 100
+
     return recall, one_percent_recall
 
 if __name__ == "__main__":
     stats = evaluate()
-
-
+    print("Evaluation Statistics:")
+    for location, stat in stats.items():
+        print(f"Location: {location}")
+        print(f"Average One Percent Recall: {stat['ave_one_percent_recall']}")
+        print(f"Average Recall: {stat['ave_recall']}")

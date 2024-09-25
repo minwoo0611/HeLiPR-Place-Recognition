@@ -1,0 +1,27 @@
+[DEFAULT]
+num_points = 8192
+max_distance = 100
+dataset_name = HeLiPR
+dataset_folder = /PATH/HeLiPR-Place-Recognition
+eval_database_files = helipr_validation_db.pickle
+eval_query_files = helipr_validation_query.pickle
+
+[TRAIN]
+num_workers = 16
+batch_size = 16
+batch_size_limit = 16
+batch_expansion_rate = 1.4
+batch_expansion_th = 0.7
+
+lr = 5e-4
+epochs = 150
+scheduler_milestones = 60
+
+aug_mode = 1
+weight_decay = 1e-3
+
+loss = BatchHardTripletMarginLoss
+normalize_embeddings = False
+margin = 0.2
+
+train_file = helipr_training.pickle

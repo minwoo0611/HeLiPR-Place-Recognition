@@ -70,14 +70,14 @@ HeLiPR-Place-Recognition
 ├── data_validation
 │   ├── SequenceA-Sensor1
 │   │   ├── LiDAR
-│   │   │   ├── 000000.bin
-│   │   │   ├── 000001.bin
+│   │   │   ├── time0.bin
+│   │   │   ├── time1.bin
 │   │   │   └── ...
 │   │   └── trajectory.csv
 │   ├── SequenceB-Sensor2
 │   │   ├── LiDAR
-│   │   │   ├── 000000.bin
-│   │   │   ├── 000001.bin
+│   │   │   ├── time0.bin
+│   │   │   ├── time1.bin
 │   │   │   └── ...
 │   │   └── trajectory.csv
 │   └── ...
@@ -93,7 +93,7 @@ HeLiPR-Place-Recognition
 
 ### Steps to Run the Validation Code
 
-We provide a `Dockerfile` for each method. You can build the Docker image and execute the code within a Docker container.
+We provide a `Dockerfile` for each method. You can build the Docker image and execute the code within a Docker container. We tested this code on an NVIDIA RTX 3090 and 3080 GPU.
 
 #### 1. Build the Docker Image and Start the Container
 

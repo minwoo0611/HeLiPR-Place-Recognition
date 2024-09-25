@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxrender-dev \
     python3-setuptools \
     python3-pip \
+    libgl1-mesa-glx \
     && rm -rf /var/lib/apt/lists/*
 
 # Upgrade pip
@@ -50,10 +51,18 @@ RUN pip install \
 RUN pip install bagpy \
     utm \
     pyexr \
-    pyntcloud
+    pyntcloud \
+    ninja \
+    scikit-learn \
+    torchtyping \
+    linear_attention_transformer \
+    future_fstrings \
+    bitarray \
+    pytorch_metric_learning==1.1.2 \
+    psutil
     
 # Copy MinkowskiEngine source code into the image
-COPY MinkowskiEngine /opt/MinkowskiEngine
+COPY thirdparty/MinkowskiEngine /opt/MinkowskiEngine
 
 # Build and install MinkowskiEngine
 WORKDIR /opt/MinkowskiEngine
@@ -62,6 +71,16 @@ RUN python setup.py install --blas=openblas --force_cuda
 # Clean up
 WORKDIR /
 RUN rm -rf /opt/MinkowskiEngine
+
+COPY thirdparty/cuda_ops /opt/cuda_ops
+
+# Build and install cuda_ops
+WORKDIR /opt/cuda_ops
+RUN python setup.py install
+
+# Clean up
+WORKDIR /
+RUN rm -rf /opt/cuda_ops
 
 # Set the default command
 CMD ["bash"]
