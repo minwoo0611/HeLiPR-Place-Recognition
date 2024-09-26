@@ -26,11 +26,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-setuptools \
     python3-pip \
     libgl1-mesa-glx \
+    libopenmpi-dev \
+    mpich \
     && rm -rf /var/lib/apt/lists/*
 
 # Upgrade pip
 RUN pip install --upgrade pip setuptools==59.5.0
-
+RUN conda install -c conda-forge mpi4py mpich -y
 # Install Python packages
 RUN pip install \
     pandas \
@@ -60,8 +62,17 @@ RUN pip install bagpy \
     bitarray \
     pytorch_metric_learning==1.1.2 \
     psutil \
-    tensorboardX
-    
+    tensorboardX \
+    torchpack 
+
+RUN pip install mpi4py 
+RUN pip install openmpi
+
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libsparsehash-dev \
+    && rm -rf /var/lib/apt/lists/*
+RUN pip install --upgrade git+https://github.com/mit-han-lab/torchsparse.git@v1.4.0
 # Copy MinkowskiEngine source code into the image
 COPY thirdparty/MinkowskiEngine /opt/MinkowskiEngine
 

@@ -4,15 +4,17 @@
 
 This repository is dedicated to comparing different place recognition methods on the [HeLiPR dataset](https://sites.google.com/view/heliprdataset). We provide code for the following methods:
 
-| Method         | Status     |
-|----------------|------------|
-| PointNetVLAD   | 24.09.25   |
-| LoGG3D-Net     | To Do      |
-| MinkLoc3Dv2    | 24.09.25   |
-| CROSSLOC3D     | 24.09.24   |
-| CASSPR         | 24.09.25   |
-| SOLID          | 24.09.24   |
-| HeLiOS         | To Do      |
+**Note (2024/09/26):** Currently, only the validation code for each method has been tested. The training code will be tested and updated.
+
+| Method         | Status                |
+|----------------|-----------------------|
+| PointNetVLAD   | Complete (24.09.25)   |
+| LoGG3D-Net     | Complete (24.09.26)   |
+| MinkLoc3Dv2    | Complete (24.09.25)   |
+| CROSSLOC3D     | Complete (24.09.24)   |
+| CASSPR         | Complete (24.09.25)   |
+| SOLID          | Complete (24.09.24)   |
+| HeLiOS         | To Do                 |
 
 ### Method Details
 
@@ -47,8 +49,6 @@ For the **Bridge** Seqs, we grouped `Bridge01-04` and `Bridge02-03` to ensure su
   - **Query**: `Seq01-Ouster`, `Seq01-Velodyne`, `Seq02-Ouster`, `Seq02-Velodyne`
 
 ## Usage
-
-**Note (2024/09/24):** Currently, only the validation code for each method has been tested. The training code will be tested and updated soon.
 
 ### Download the Validation Dataset
 
