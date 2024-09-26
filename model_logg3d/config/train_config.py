@@ -13,11 +13,12 @@ def add_argument_group(name):
 def str2bool(v):
     return v.lower() in ('true', '1')
 
+
 # Training
 trainer_arg = add_argument_group('Train')
 trainer_arg.add_argument('--train_pipeline', type=str, default='LOGG3D')
-trainer_arg.add_argument('--resume_training', type=str2bool, default=False)
-trainer_arg.add_argument('--resume_checkpoint', type=str, default='2024-08-16_00-54-14_run_0_best')
+trainer_arg.add_argument('--resume_training', type=str2bool, default=True)
+trainer_arg.add_argument('--resume_checkpoint', type=str, default='2024-08-03_11-54-17_run_0')
 
 # Batch setting
 trainer_arg.add_argument('--batch_size', type=int, default=1) # Batch size is limited to 1.
@@ -104,32 +105,25 @@ data_arg.add_argument('--mulran_data_split', type=dict, default={
 
 # HeLiPR
 data_arg.add_argument('--helipr_dir', type=str,
-                      default='/mydata/home/oem/minwoo/PR/velodyne_data/training', help="Path to the HeLiPR dataset")
+                      default='/mydata/home/oem/minwoo/PR/training', help="Path to the HeLiPR dataset")
 data_arg.add_argument("--helipr_normalize_intensity", type=str2bool,
                       default=False, help="Normalize intensity return.")
 data_arg.add_argument('--helipr_tp_json', type=str,
-                      default='positive_sequence_D-0.8_T-0_nclt.json')
+                      default='positive_sequence_D-0.5_T-0.json')
 data_arg.add_argument('--helipr_fp_json', type=str,
-                      default='positive_sequence_D-0.001_T-0_nclt.json')
+                      default='positive_sequence_D-0.001_T-0.json')
 data_arg.add_argument('--helipr_data_split', type=dict, default={
-    # 'train': [
-    #     'DCC04-Aeva', 'DCC04-Avia', 'DCC04-Ouster', 'DCC04-Velodyne',
-    #     'DCC05-Aeva', 'DCC05-Avia', 'DCC05-Ouster', 'DCC05-Velodyne',
-    #     'DCC06-Aeva', 'DCC06-Avia', 'DCC06-Ouster', 'DCC06-Velodyne',
-    #     'KAIST04-Aeva', 'KAIST04-Avia', 'KAIST04-Ouster', 'KAIST04-Velodyne',
-    #     'KAIST05-Aeva', 'KAIST05-Avia', 'KAIST05-Ouster', 'KAIST05-Velodyne',
-    #     'KAIST06-Aeva', 'KAIST06-Avia', 'KAIST06-Ouster', 'KAIST06-Velodyne',
-    #     'Riverside04-Aeva', 'Riverside04-Avia', 'Riverside04-Ouster', 'Riverside04-Velodyne',
-    #     'Riverside05-Aeva', 'Riverside05-Avia', 'Riverside05-Ouster', 'Riverside05-Velodyne',
-    #     'Riverside06-Aeva', 'Riverside06-Avia', 'Riverside06-Ouster', 'Riverside06-Velodyne',
-    # ],
-    # only ouster
-    # 'train' :[
-    #     'DCC04-Avia', 'DCC05-Avia', 'DCC06-Avia',
-    #     'KAIST04-Avia', 'KAIST05-Avia', 'KAIST06-Avia',
-    #     'Riverside04-Avia', 'Riverside05-Avia', 'Riverside06-Avia',
-    # ],
-    'train' : ["NCLT01-Velodyne",  "NCLT02-Velodyne",  "NCLT03-Velodyne",  "NCLT04-Velodyne",  "NCLT05-Velodyne",  "NCLT06-Velodyne",  "NCLT07-Velodyne",  "NCLT08-Velodyne"],
+    'train': [
+        'DCC04-Aeva', 'DCC04-Avia', 'DCC04-Ouster', 'DCC04-Velodyne',
+        'DCC05-Aeva', 'DCC05-Avia', 'DCC05-Ouster', 'DCC05-Velodyne',
+        'DCC06-Aeva', 'DCC06-Avia', 'DCC06-Ouster', 'DCC06-Velodyne',
+        'KAIST04-Aeva', 'KAIST04-Avia', 'KAIST04-Ouster', 'KAIST04-Velodyne',
+        'KAIST05-Aeva', 'KAIST05-Avia', 'KAIST05-Ouster', 'KAIST05-Velodyne',
+        'KAIST06-Aeva', 'KAIST06-Avia', 'KAIST06-Ouster', 'KAIST06-Velodyne',
+        'Riverside04-Aeva', 'Riverside04-Avia', 'Riverside04-Ouster', 'Riverside04-Velodyne',
+        'Riverside05-Aeva', 'Riverside05-Avia', 'Riverside05-Ouster', 'Riverside05-Velodyne',
+        'Riverside06-Aeva', 'Riverside06-Avia', 'Riverside06-Ouster', 'Riverside06-Velodyne',
+    ],
     'val': [],
     'test': []
 })
