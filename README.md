@@ -14,7 +14,7 @@ This repository is dedicated to comparing different place recognition methods on
 | CROSSLOC3D     | Complete (24.09.24)   |
 | CASSPR         | Complete (24.09.25)   |
 | SOLID          | Complete (24.09.24)   |
-| HeLiOS         | To Do                 |
+| HeLiOS         | Complete (25.05.10)   |
 
 ### Method Details
 
@@ -24,7 +24,7 @@ This repository is dedicated to comparing different place recognition methods on
 - **[CrossLoc3D](https://arxiv.org/abs/2303.17778)**: Aerial-Ground Cross-Source 3D Place Recognition [[Original Code]](https://github.com/rayguan97/crossloc3d) (ICCV 2023)
 - **[CASSPR](https://arxiv.org/abs/2211.12542)**: Cross Attention Single Scan Place Recognition [[Original Code]](https://github.com/Yan-Xia/CASSPR) (ICCV 2023)
 - **[SOLID](https://arxiv.org/abs/2408.07330)**: Spatially Organized and Lightweight Global Descriptor for FOV-constrained LiDAR Place Recognition [[Original Code]](https://github.com/sparolab/solid) (RA-L 2024)
-- **HeLiOS**: Heterogeneous LiDAR Place Recognition via Overlap-based Learning and Local Spherical Transformer [[Original Code]](https://github.com/minwoo0611/HeLiOS) (ICRA 2025 submission)
+- **[HeLiOS](https://arxiv.org/abs/2501.18943)**: Heterogeneous LiDAR Place Recognition via Overlap-based Learning and Local Spherical Transformer [[Original Code]](https://github.com/minwoo0611/HeLiOS) (ICRA 2025)
 
 ## Comparison on the HeLiPR Dataset
 
@@ -151,21 +151,28 @@ cd model_X
 If you find this repository useful, please cite the following papers:
 
 ```bibtex
-@article{jung2024heteropr,
-  author={Minwoo Jung and Sangwoo Jung and Hyeonjae Gil and Ayoung Kim},
-  title={HeLiOS: Heterogeneous LiDAR Place Recognition via Overlap-based Learning and Local Spherical Transformer},
-  year={2024},
-  journal={ICRA 2025 submission}
+@INPROCEEDINGS { mwjung-2025-icra,
+    AUTHOR = { Minwoo Jung and Sangwoo Jung and Hyeonjae Gil and Ayoung Kim },
+    TITLE = { HeLiOS: Heterogeneous LiDAR Place Recognition via Overlap-based Learning and Local Spherical Transformer },
+    BOOKTITLE = { Proceedings of the IEEE International Conference on Robotics and Automation (ICRA) },
+    YEAR = { 2025 },
+    MONTH = { May. },
+    ADDRESS = { Atlanta },
 }
 ```
 
 ```bibtex
-@article{jung2024hetero,
-  author = {Minwoo Jung and Wooseong Yang and Dongjae Lee and Hyeonjae Gil and Giseop Kim and Ayoung Kim},
-  title  = {HeLiPR: Heterogeneous LiDAR dataset for inter-LiDAR place recognition under spatiotemporal variations},
-  journal= {The International Journal of Robotics Research},
-  year   = {2024}
+@article{jung2024helipr,
+  title={HeLiPR: Heterogeneous LiDAR dataset for inter-LiDAR place recognition under spatiotemporal variations},
+  author={Jung, Minwoo and Yang, Wooseong and Lee, Dongjae and Gil, Hyeonjae and Kim, Giseop and Kim, Ayoung},
+  journal={The International Journal of Robotics Research},
+  volume={43},
+  number={12},
+  pages={1867--1883},
+  year={2024},
+  publisher={SAGE Publications Sage UK: London, England}
 }
+
 ```
 
 ## Contact
