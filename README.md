@@ -52,7 +52,7 @@ For the **Bridge** Seqs, we grouped `Bridge01-04` and `Bridge02-03` to ensure su
 
 ### Download the Validation Dataset
 
-Please download the validation dataset from [here](https://drive.google.com/drive/folders/10wXhjOnKlhkxm3a1Td34YdtNJCRFxIoZ?usp=drive_link). This link contains:
+Please download the validation dataset from [here](https://drive.google.com/drive/folders/1b2HFFEKnPkcqjnwOQbTxoGJHfxrb3KwS?usp=sharing). This link contains:
 
 - Sampled point cloud data from the HeLiPR dataset (Roundabout, Town, and Bridge)
 - Checkpoint files for each method
